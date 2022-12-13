@@ -17,19 +17,19 @@ struct ContentView: View {
             VStack {
                 Text(currentLine)
                     .padding()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
                 
                 Grid {
                     ForEach(0..<buttonRows.count, id: \.self) { rowIndex in
                         GridRow {
-                            ForEach(buttonRows[rowIndex]) { calculatorButton in
-                                calculatorButton.view
+                            ForEach(0..<buttonRows[rowIndex].count, id: \.self) { columnIndex in
+                                buttonRows[rowIndex][columnIndex]
                             }
                         }
                     }
                 }
             }
-            .padding(.bottom)
+            .padding(.all)
         }
     }
 
@@ -42,7 +42,7 @@ struct ContentView: View {
         ]
     }
 
-    var buttonRows: [[CalculatorButton]] {
+    var buttonRows: [[some View]] {
         rows.map { row in
             row.map { buttonOption in
                 calculatorButtons(buttonOption: buttonOption)
@@ -50,9 +50,9 @@ struct ContentView: View {
         }
     }
 
-    func calculatorButtons(buttonOption: ButtonOption) -> CalculatorButton {
+    func calculatorButtons(buttonOption: ButtonOption) -> AnyView {
         [
-            .empty: CalculatorButton(view: AnyView(Text("")), buttonType: .empty),
+            .empty: AnyView(Text("")),
             .zero: numberButton(text: String(0)),
             .one: numberButton(text: String(1)),
             .two: numberButton(text: String(2)),
@@ -63,72 +63,69 @@ struct ContentView: View {
             .seven: numberButton(text: String(7)),
             .eight: numberButton(text: String(8)),
             .nine: numberButton(text: String(9)),
-            .delete: CalculatorButton(
-                view: AnyView(
-                    Button {
-                        withAnimation {
-                            _ = currentLine.popLast()
-                        }
-                    } label: {
-                        Image(systemName: "delete.left")
-                    }
-                    .frame(width: 20, height: 20)
-                    .padding()
-                    .foregroundColor(.primary)
-                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 5))
-                ),
-                buttonType: .symbol
-            ),
-            .openParenthesis: symbolButton(text: "("),
-            .closeParenthesis: symbolButton(text: ")"),
-            .times: symbolButton(text: "x"),
-            .division: symbolButton(text: "/"),
-            .dot: symbolButton(text: "."),
-            .minus: symbolButton(text: "—"),
-            .plus: symbolButton(text: "+"),
-            .equal: CalculatorButton(
-                view: AnyView(
-                    Button {
-                        withAnimation {
-                            currentLine.append("=")
-                        }
-                    } label: {
-                        Text("=")
-                    }
-                    .frame(width: 20, height: 20)
-                    .padding()
-                    .foregroundColor(.primary)
-                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 5))
-                ),
-                buttonType: .primary
-            )
-        ][buttonOption]!
-    }
-
-    func numberButton(text: String) -> CalculatorButton {
-        appendButton(text: text, buttonType: .number)
-    }
-
-    func symbolButton(text: String) -> CalculatorButton {
-        appendButton(text: text, buttonType: .symbol)
-    }
-
-    func appendButton(text: String, buttonType: ButtonType) -> CalculatorButton {
-        CalculatorButton(
-           view: AnyView(
+            .delete: AnyView(
                 Button {
                     withAnimation {
-                        currentLine.append(text)
+                        _ = currentLine.popLast()
                     }
                 } label: {
-                    Text(text)
+                    Image(systemName: "delete.left")
                 }
                 .frame(width: 20, height: 20)
                 .padding()
                 .foregroundColor(.primary)
                 .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 5))
-           ),
-           buttonType: buttonType
+            ),
+            .openParenthesis: numberButton(text: "("),
+            .closeParenthesis: numberButton(text: ")"),
+            .times: symbolButton(text: "x"),
+            .division: symbolButton(text: "/"),
+            .dot: numberButton(text: "."),
+            .minus: symbolButton(text: "—"),
+            .plus: symbolButton(text: "+"),
+            .equal: AnyView(
+                Button {
+                    withAnimation {
+                        currentLine.append("=")
+                    }
+                } label: {
+                    Text("=")
+                }
+                .frame(width: 20, height: 20)
+                .padding()
+                .foregroundColor(.white)
+                .background(Color.accentColor, in: RoundedRectangle(cornerRadius: 5))
+            ),
+        ][buttonOption]!
+    }
+
+    func numberButton(text: String) -> AnyView {
+        AnyView(
+            appendButton(text: text)
+                .foregroundColor(.primary)
+                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 5))
+        )
+    }
+
+    func symbolButton(text: String) -> AnyView {
+        AnyView(
+        appendButton(text: text)
+            .foregroundColor(.white)
+            .background(Color.accentColor, in: RoundedRectangle(cornerRadius: 5))
+        )
+    }
+
+    func appendButton(text: String) -> AnyView {
+        AnyView(
+            Button {
+                withAnimation {
+                    currentLine.append(text)
+                }
+            } label: {
+                Text(text)
+            }
+            .frame(width: 20, height: 20)
+            .padding()
         )
     }
 }
