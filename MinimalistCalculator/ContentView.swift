@@ -86,7 +86,12 @@ struct ContentView: View {
             .equal: AnyView(
                 Button {
                     withAnimation {
-                        currentLine.append("=")
+                        let mathExpression = NSExpression(format: currentLine)
+                        let mathValue = mathExpression.expressionValue(with: nil, context: nil) as? Double
+                        
+                        if let result = mathValue {
+                            currentLine = String(result)
+                        }
                     }
                 } label: {
                     Text("=")
