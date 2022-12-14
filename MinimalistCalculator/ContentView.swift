@@ -53,16 +53,16 @@ struct ContentView: View {
     func calculatorButtons(buttonOption: ButtonOption) -> AnyView {
         [
             .empty: AnyView(Text("")),
-            .zero: numberButton(text: String(0)),
-            .one: numberButton(text: String(1)),
-            .two: numberButton(text: String(2)),
-            .three: numberButton(text: String(3)),
-            .four: numberButton(text: String(4)),
-            .five: numberButton(text: String(5)),
-            .six: numberButton(text: String(6)),
-            .seven: numberButton(text: String(7)),
-            .eight: numberButton(text: String(8)),
-            .nine: numberButton(text: String(9)),
+            .zero: normalButton(text: String(0)),
+            .one: normalButton(text: String(1)),
+            .two: normalButton(text: String(2)),
+            .three: normalButton(text: String(3)),
+            .four: normalButton(text: String(4)),
+            .five: normalButton(text: String(5)),
+            .six: normalButton(text: String(6)),
+            .seven: normalButton(text: String(7)),
+            .eight: normalButton(text: String(8)),
+            .nine: normalButton(text: String(9)),
             .delete: AnyView(
                 Button {
                     withAnimation {
@@ -76,13 +76,13 @@ struct ContentView: View {
                 .foregroundColor(.primary)
                 .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 5))
             ),
-            .openParenthesis: numberButton(text: "("),
-            .closeParenthesis: numberButton(text: ")"),
-            .times: symbolButton(text: "x"),
-            .division: symbolButton(text: "/"),
-            .dot: numberButton(text: "."),
-            .minus: symbolButton(text: "—"),
-            .plus: symbolButton(text: "+"),
+            .openParenthesis: normalButton(text: "("),
+            .closeParenthesis: normalButton(text: ")"),
+            .times: accentButton(text: "x"),
+            .division: accentButton(text: "/"),
+            .dot: normalButton(text: "."),
+            .minus: accentButton(text: "—"),
+            .plus: accentButton(text: "+"),
             .equal: AnyView(
                 Button {
                     withAnimation {
@@ -99,23 +99,23 @@ struct ContentView: View {
         ][buttonOption]!
     }
 
-    func numberButton(text: String) -> AnyView {
+    func normalButton(text: String) -> AnyView {
         AnyView(
-            appendButton(text: text)
+            baseButton(text: text)
                 .foregroundColor(.primary)
                 .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 5))
         )
     }
 
-    func symbolButton(text: String) -> AnyView {
+    func accentButton(text: String) -> AnyView {
         AnyView(
-        appendButton(text: text)
-            .foregroundColor(.white)
-            .background(Color.accentColor, in: RoundedRectangle(cornerRadius: 5))
+            baseButton(text: text)
+                .foregroundColor(.white)
+                .background(Color.accentColor, in: RoundedRectangle(cornerRadius: 5))
         )
     }
 
-    func appendButton(text: String) -> AnyView {
+    func baseButton(text: String) -> AnyView {
         AnyView(
             Button {
                 withAnimation {
